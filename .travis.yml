@@ -7,15 +7,12 @@ addons:
   apt:
     packages:
       - libboost-dev
-      - gcc-5
-      - g++-5
-      - libstdc++-5-dev
+      - libboost-date-time-dev
+      - build-essential
       - liblua5.1-0-dev
       - python-virtualenv
       - libgeoip-dev
       - geoip-database
-    sources:
-      - ubuntu-toolchain-r-test
 before_script:
  - wget http://http.us.debian.org/debian/pool/main/libs/libsodium/libsodium-dev_1.0.0-1_amd64.deb http://http.us.debian.org/debian/pool/main/libs/libsodium/libsodium13_1.0.0-1_amd64.deb
  - dpkg-deb -x libsodium13_1.0.0-1_amd64.deb ${HOME}/libsodium
@@ -35,9 +32,9 @@ before_script:
  - sed -i -e 's/]/}/g' ${HOME}/getdns/usr/lib/pkgconfig/getdns.pc
  - export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:${HOME}/getdns/usr/lib/pkgconfig
  - export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOME}/getdns/usr/lib/x86_64-linux-gnu
- - wget http://ftp.de.debian.org/debian/pool/main/o/openssl/libssl1.0.2_1.0.2g-1_amd64.deb
- - dpkg-deb -x libssl1.0.2_1.0.2g-1_amd64.deb ${HOME}/libssl
- - rm libssl1.0.2_1.0.2g-1_amd64.deb
+ - wget http://ftp.de.debian.org/debian/pool/main/o/openssl/libssl1.0.2_1.0.2h-1_amd64.deb
+ - dpkg-deb -x libssl1.0.2_1.0.2h-1_amd64.deb ${HOME}/libssl
+ - rm libssl1.0.2_1.0.2h-1_amd64.deb
  - export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOME}/libssl/usr/lib/x86_64-linux-gnu
  - wget http://ftp.de.debian.org/debian/pool/main/u/unbound/libunbound2_1.5.8-1_amd64.deb
  - dpkg-deb -x libunbound2_1.5.8-1_amd64.deb ${HOME}/libunbound
@@ -46,7 +43,6 @@ before_script:
  - export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOME}/libunbound/usr/lib/x86_64-linux-gnu
  - dig @208.67.222.222 a.root-servers.net
 script:
- - export CC='gcc-5' CXX='g++-5'
  - autoreconf -i
  - ./configure
  - make
