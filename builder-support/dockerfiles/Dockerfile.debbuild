@@ -11,7 +11,7 @@ ARG BUILDER_PACKAGE_MATCH
 
 @IF [ ! -z "$M_all$M_wforce" ]
 # Build getdns on stretch, has some build hacks for the older debhelper in stretch (we grab the buster source)
-RUN grep -q stretch /etc/os-release && \
+RUN if ($(grep -q stretch /etc/os-release)); then \
   echo "deb http://ftp.debian.org/debian `grep PRETTY_NAME /etc/os-release | sed 's,.*(\(.*\)).*,\1,'`-backports main" > /etc/apt/sources.list.d/backports.list && \
   apt-get update && \
   mkdir -p /dist/vendor/getdns /getdns && \
@@ -28,10 +28,13 @@ RUN grep -q stretch /etc/os-release && \
   sed -i '/Breaks:/a \ libgetdns1,' getdns-$GETDNS_VERSION/debian/control && \
   sed -i '/Replaces:/a \ ligetdns1,' getdns-$GETDNS_VERSION/debian/control && \
   /wforce/builder/helpers/build-debs.sh getdns-$GETDNS_VERSION && \
-  mv *getdns*.deb stubby*.deb /dist/vendor/getdns
+  mv *getdns*.deb stubby*.deb /dist/vendor/getdns; \
+  else exit 0; \
+  fi
 
-RUN grep -q stretch /etc/os-release && \
-  dpkg -i /dist/vendor/getdns/libgetdns*.deb; apt-get -f -y install
+RUN if ($(grep -q stretch /etc/os-release)); then \
+  dpkg -i /dist/vendor/getdns/libgetdns*.deb; apt-get -f -y install; \
+  fi
 
 # Build weakforce
 WORKDIR /wforce
